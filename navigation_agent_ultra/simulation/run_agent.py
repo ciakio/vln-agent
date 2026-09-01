@@ -7,6 +7,7 @@ import logging
 import sys
 import time
 import types
+from datetime import datetime
 from pathlib import Path
 
 
@@ -38,6 +39,8 @@ def main():
     )
     parser.add_argument("--scenes-dir", type=Path, default=home / "datasets/MatterPort3D")
     parser.add_argument("--instruction")
+    parser.add_argument("--model", default="qwen3.7-flash")
+    parser.add_argument("--record-video", action="store_true")
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
@@ -49,13 +52,18 @@ def main():
 
     episode = load_episode(args.dataset, args.episode_id)
     instruction = args.instruction or episode["instruction"]["instruction_text"]
-    with HabitatRuntime(args.scenes_dir) as runtime:
+    record_dir = None
+    if args.record_video:
+        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        record_dir = Path("simulation_outputs") / f"episode_{args.episode_id}_{stamp}"
+    with HabitatRuntime(args.scenes_dir, record_dir=record_dir) as runtime:
         runtime.reset(episode)
         set_runtime(runtime)
         try:
             from agent import NavigationAgent
+            from llm_client import LLMClient
 
-            result = NavigationAgent().run(instruction)
+            result = NavigationAgent(llm_client=LLMClient(model=args.model, timeout=120)).run(instruction)
             runtime.stop()
             result["simulation"] = runtime.metrics()
         finally:

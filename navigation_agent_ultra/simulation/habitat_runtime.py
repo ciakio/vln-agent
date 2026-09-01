@@ -1,5 +1,6 @@
 """Stateful Habitat-Sim runtime shared by simulation entry points."""
 
+import json
 import math
 from pathlib import Path
 
@@ -23,11 +24,57 @@ def heading_degrees(forward):
     return -math.degrees(math.atan2(float(forward[0]), -float(forward[2])))
 
 
+class EpisodeRecorder:
+    """Write an annotated RGB trajectory and matching JSONL telemetry."""
+
+    def __init__(self, output_dir, fps=10):
+        self.output_dir = Path(output_dir)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
+        self.fps = fps
+        self.video = None
+        self.telemetry = (self.output_dir / "telemetry.jsonl").open("w", encoding="utf-8")
+
+    def capture(self, frame, metadata):
+        import cv2
+
+        if frame.shape[2] == 4:
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGBA2BGR)
+        else:
+            frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
+        pose = metadata["pose"]
+        lines = (
+            f'step={metadata["step"]} action={metadata["action"]}',
+            f'x={pose[0]:.2f} z={pose[1]:.2f} yaw={pose[2]:.1f} dist={metadata["distance"]:.2f}m',
+        )
+        for index, line in enumerate(lines):
+            cv2.putText(frame, line, (12, 28 + 28 * index), cv2.FONT_HERSHEY_SIMPLEX, 0.65, (0, 255, 0), 2)
+        if self.video is None:
+            height, width = frame.shape[:2]
+            self.video = cv2.VideoWriter(
+                str(self.output_dir / "trajectory.mp4"),
+                cv2.VideoWriter_fourcc(*"mp4v"),
+                self.fps,
+                (width, height),
+            )
+        self.video.write(frame)
+        self.telemetry.write(json.dumps(metadata, ensure_ascii=False) + "\n")
+        self.telemetry.flush()
+
+    def close(self):
+        if self.video is not None:
+            self.video.release()
+            self.video = None
+        if not self.telemetry.closed:
+            self.telemetry.close()
+
+
 class HabitatRuntime:
     ACTIONS = frozenset(("move_forward", "turn_left", "turn_right"))
 
-    def __init__(self, scenes_dir):
+    def __init__(self, scenes_dir, record_dir=None):
         self.scenes_dir = Path(scenes_dir)
+        self.record_dir = Path(record_dir) if record_dir else None
+        self.recorder = None
         self.sim = None
         self.agent = None
         self.episode = None
@@ -79,7 +126,11 @@ class HabitatRuntime:
             self.agent.get_state().position,
             episode["goals"][0]["position"],
         )
-        return self.observe()
+        observation = self.observe()
+        if self.record_dir:
+            self.recorder = EpisodeRecorder(self.record_dir)
+            self._record("reset", observation)
+        return observation
 
     def observe(self):
         if self.sim is None:
@@ -102,6 +153,7 @@ class HabitatRuntime:
         after = self.agent.get_state().position
         self.path_length += _distance(before, after)
         self.steps += 1
+        self._record(action, observation)
         return observation
 
     def stop(self):
@@ -146,7 +198,7 @@ class HabitatRuntime:
         score = 0.0 if not success else self.shortest_distance / max(
             self.shortest_distance, self.path_length, 1e-9
         )
-        return {
+        metrics = {
             "steps": self.steps,
             "success": success,
             "spl": score,
@@ -154,6 +206,23 @@ class HabitatRuntime:
             "path_length": self.path_length,
             "final_distance": final_distance,
         }
+        if self.record_dir:
+            metrics["recording"] = str(self.record_dir)
+        return metrics
+
+    def _record(self, action, observation):
+        if getattr(self, "recorder", None) is None:
+            return
+        goal = self.episode["goals"][0]["position"]
+        self.recorder.capture(
+            observation["color_sensor"],
+            {
+                "step": self.steps,
+                "action": action,
+                "pose": list(self.get_pose()),
+                "distance": self._geodesic(self.agent.get_state().position, goal),
+            },
+        )
 
     def _geodesic(self, start, end):
         import habitat_sim
@@ -166,6 +235,9 @@ class HabitatRuntime:
         return float(path.geodesic_distance)
 
     def close(self):
+        if getattr(self, "recorder", None) is not None:
+            self.recorder.close()
+            self.recorder = None
         if self.sim is not None:
             self.sim.close()
             self.sim = None

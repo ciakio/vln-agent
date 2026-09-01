@@ -1,8 +1,11 @@
 import inspect
+import json
 from types import SimpleNamespace
 
+import numpy as np
 import pytest
 
+from simulation import habitat_runtime
 from simulation.habitat_runtime import HabitatRuntime, heading_degrees
 
 
@@ -79,3 +82,16 @@ def test_heading_uses_ros_left_positive_convention():
 
 def test_navigation_radius_matches_discrete_forward_step():
     assert inspect.signature(HabitatRuntime.navigate_to).parameters["goal_radius"].default == 0.25
+
+
+def test_episode_recorder_writes_video_and_telemetry(tmp_path):
+    recorder = habitat_runtime.EpisodeRecorder(tmp_path, fps=2)
+    recorder.capture(
+        np.zeros((48, 64, 4), dtype=np.uint8),
+        {"step": 1, "action": "move_forward", "pose": [1.0, 2.0, 90.0], "distance": 3.0},
+    )
+    recorder.close()
+
+    assert (tmp_path / "trajectory.mp4").stat().st_size > 0
+    record = json.loads((tmp_path / "telemetry.jsonl").read_text().strip())
+    assert record["action"] == "move_forward"
