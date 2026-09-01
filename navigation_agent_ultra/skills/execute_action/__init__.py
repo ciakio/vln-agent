@@ -126,17 +126,16 @@ def _exec_navigate_to_pose(p):
     if not motion.odom.wait_for_odom():
         return _fail("navigate_to_pose", "无法获取 odom 数据")
 
-    send_navigation_goal(
+    arrived = send_navigation_goal(
         x=p["x"], y=p["y"], z=p["z"],
         yaw_deg=p["yaw"], task_type=p["task_type"],
-    )
+    ) is True
 
     # 等待到达（与其他 skill 的导航循环一致）
     NAV_TIMEOUT = 60.0
     ARRIVE_THRESHOLD = 0.1
     t0 = time.time()
-    arrived = False
-    while not (rospy is not None and rospy.is_shutdown()):
+    while not arrived and not (rospy is not None and rospy.is_shutdown()):
         cx, cy, _ = motion.sync_pose()
         dist = math.hypot(p["x"] - cx, p["y"] - cy)
         if dist < ARRIVE_THRESHOLD:

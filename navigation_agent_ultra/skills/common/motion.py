@@ -16,6 +16,7 @@ from .config import (
 )
 from .pid import PIDController
 from .ros_utils import require_ros, rospy, Twist, OdomListener, normalize_angle
+from .runtime import get_runtime
 
 # navigation.msg 是自定义 ROS 消息，延迟导入
 try:
@@ -46,6 +47,9 @@ def send_navigation_goal(x, y, z=0.0, yaw_deg=0.0, task_type=0):
     Publisher 跨调用复用，仅首次创建时等待连接；发完短暂等待确保消息发出。
     不等待到达。等待到达的逻辑在各 skill 内部的导航循环中实现。
     """
+    runtime = get_runtime()
+    if runtime is not None:
+        return runtime.navigate_to(x, y, yaw_deg)
     require_ros()
     if NavigationActionGoal is None:
         raise ImportError("navigation.msg 不可用，请在机器人 ROS 环境中运行")
@@ -94,6 +98,8 @@ def send_navigation_goal(x, y, z=0.0, yaw_deg=0.0, task_type=0):
 
 def cancel_navigation(odom_listener=None):
     """发送当前原地位姿覆盖导航目标，强行截停底层导航。"""
+    if get_runtime() is not None:
+        return
     require_ros()
     if odom_listener is None:
         odom_listener = OdomListener(ODOM_TOPIC)
@@ -115,6 +121,14 @@ class MotionController:
 
     def __init__(self, cmd_topic=CMD_TOPIC, odom_topic=ODOM_TOPIC):
         require_ros()
+        self.runtime = get_runtime()
+        if self.runtime is not None:
+            self.pub = None
+            self.rate = None
+            self.odom = OdomListener(odom_topic)
+            self.x = self.y = self.theta = 0.0
+            self.sync_pose()
+            return
         self.pub = rospy.Publisher(cmd_topic, Twist, queue_size=10)
         self.odom = OdomListener(odom_topic)
         self.rate = rospy.Rate(PUB_RATE)
@@ -140,11 +154,15 @@ class MotionController:
 
     def send_stop(self):
         """发一次零速度 + sleep 0.2s（与现有 _send_stop 行为一致）。"""
+        if self.runtime is not None:
+            return
         self.pub.publish(Twist())
         rospy.sleep(0.2)
 
     def brake(self):
         """强制刹车：双零速 + 1s 物理缓冲（用于 move_to 到位后）。"""
+        if self.runtime is not None:
+            return
         self.pub.publish(Twist())
         self.pub.publish(Twist())
         rospy.sleep(1.0)
@@ -155,6 +173,10 @@ class MotionController:
         使用实测 dt、卡死检测、超时保护；最终误差 <= ANGLE_TOLERANCE*2 (8°) 判定成功。
         控制行为与原各 skill 中的 rotate_to 方法完全一致。
         """
+        if self.runtime is not None:
+            result = self.runtime.rotate_to(target_yaw_deg)
+            self.sync_pose()
+            return result
         if timeout is None:
             timeout = ROTATE_TIMEOUT
 

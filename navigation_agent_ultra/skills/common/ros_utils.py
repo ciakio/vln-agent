@@ -35,11 +35,12 @@ from .config import (
     CameraIntrinsics, CAMERA_TOPICS, CAMERA_INTRINSICS,
     CAPTURE_TIMEOUT, ODOM_TOPIC, ODOM_TIMEOUT,
 )
+from .runtime import get_runtime
 
 
 def require_ros():
     """调用任何需要 ROS 的功能前必须先调用此函数。"""
-    if not ROS_AVAILABLE:
+    if not ROS_AVAILABLE and get_runtime() is None:
         raise ImportError(
             "ROS (rospy) 不可用。请在机器人上 source /opt/ros/noetic/setup.bash 后运行，"
             "或在无 ROS 环境下仅使用不依赖 ROS 的功能（list_skills / 纯计算函数）。"
@@ -148,6 +149,10 @@ class OdomListener:
 
     def __init__(self, topic: str = ODOM_TOPIC):
         require_ros()
+        self.runtime = get_runtime()
+        if self.runtime is not None:
+            self.topic = topic
+            return
         self.topic = topic
         self._lock = threading.Lock()
         self._x = 0.0
@@ -168,11 +173,16 @@ class OdomListener:
 
     def get_pose(self):
         """返回 (x, y, theta_rad)"""
+        if self.runtime is not None:
+            x, y, theta_deg = self.runtime.get_pose()
+            return x, y, math.radians(theta_deg)
         with self._lock:
             return self._x, self._y, self._theta
 
     def wait_for_odom(self, timeout: float = ODOM_TIMEOUT) -> bool:
         """阻塞等待第一帧 odom，超时返回 False。"""
+        if self.runtime is not None:
+            return True
         t0 = rospy.Time.now().to_sec()
         while not rospy.is_shutdown():
             with self._lock:
@@ -266,6 +276,11 @@ class SingleImageSaver:
 # ===================================================================
 def capture_rgb_depth(camera: str = "chest") -> dict:
     """同时采集 RGB + 深度，返回 {f"{camera}_rgb": ndarray, f"{camera}_depth": ndarray} 或空 dict。"""
+    runtime = get_runtime()
+    if runtime is not None:
+        observation = runtime.observe()
+        rgb = observation["color_sensor"][..., :3][..., ::-1].copy()
+        return {f"{camera}_rgb": rgb, f"{camera}_depth": observation["depth_sensor"]}
     rgb_topic = CAMERA_TOPICS[f"{camera}_rgb"]
     depth_topic = CAMERA_TOPICS[f"{camera}_depth"]
     saver = MultiImageSaver({
@@ -280,6 +295,9 @@ def capture_rgb_depth(camera: str = "chest") -> dict:
 
 def capture_rgb(camera: str = "chest"):
     """采集 RGB 图像，返回 numpy 数组或 None。"""
+    runtime = get_runtime()
+    if runtime is not None:
+        return runtime.observe()["color_sensor"][..., :3][..., ::-1].copy()
     topic = CAMERA_TOPICS[f"{camera}_rgb"]
     saver = SingleImageSaver(topic)
     return saver.get_image(timeout_sec=CAPTURE_TIMEOUT)
@@ -287,4 +305,7 @@ def capture_rgb(camera: str = "chest"):
 
 def get_intrinsics(camera: str = "chest") -> CameraIntrinsics:
     """获取指定相机的内参。"""
+    if get_runtime() is not None:
+        return CameraIntrinsics(fx=320.0, fy=320.0, cx=320.0, cy=240.0,
+                                width=640, height=480)
     return CAMERA_INTRINSICS[camera]

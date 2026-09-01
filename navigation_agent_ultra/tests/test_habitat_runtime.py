@@ -1,8 +1,9 @@
+import inspect
 from types import SimpleNamespace
 
 import pytest
 
-from simulation.habitat_runtime import HabitatRuntime
+from simulation.habitat_runtime import HabitatRuntime, heading_degrees
 
 
 class FakeAgent:
@@ -68,3 +69,13 @@ def test_close_releases_simulator():
     runtime.close()
     assert simulator.closed is True
     assert runtime.sim is None
+
+
+def test_heading_uses_ros_left_positive_convention():
+    assert heading_degrees([0.0, 0.0, -1.0]) == pytest.approx(0.0)
+    assert heading_degrees([-1.0, 0.0, 0.0]) == pytest.approx(90.0)
+    assert heading_degrees([1.0, 0.0, 0.0]) == pytest.approx(-90.0)
+
+
+def test_navigation_radius_matches_discrete_forward_step():
+    assert inspect.signature(HabitatRuntime.navigate_to).parameters["goal_radius"].default == 0.25

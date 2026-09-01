@@ -18,6 +18,11 @@ def _distance(a, b):
     return math.sqrt(sum((float(x) - float(y)) ** 2 for x, y in zip(a, b)))
 
 
+def heading_degrees(forward):
+    """Convert Habitat forward vector to ROS yaw (left positive)."""
+    return -math.degrees(math.atan2(float(forward[0]), -float(forward[2])))
+
+
 class HabitatRuntime:
     ACTIONS = frozenset(("move_forward", "turn_left", "turn_right"))
 
@@ -87,8 +92,7 @@ class HabitatRuntime:
 
         state = self.agent.get_state()
         forward = quat_rotate_vector(state.rotation, np.asarray([0.0, 0.0, -1.0]))
-        heading = math.degrees(math.atan2(float(forward[0]), -float(forward[2])))
-        return float(state.position[0]), float(state.position[2]), heading
+        return float(state.position[0]), float(state.position[2]), heading_degrees(forward)
 
     def step(self, action):
         if action not in self.ACTIONS:
@@ -103,6 +107,37 @@ class HabitatRuntime:
     def stop(self):
         self.stopped = True
         return self.observe()
+
+    def rotate_to(self, target_yaw_deg, tolerance=5.0):
+        for _ in range(36):
+            error = (float(target_yaw_deg) - self.get_pose()[2] + 180.0) % 360.0 - 180.0
+            if abs(error) <= tolerance:
+                return True
+            self.step("turn_left" if error > 0 else "turn_right")
+        return False
+
+    def navigate_to(self, x, y, yaw_deg=0.0, goal_radius=0.25, max_steps=500):
+        import habitat_sim
+        import numpy as np
+
+        height = float(self.agent.get_state().position[1])
+        goal = np.asarray([x, height, y], dtype=np.float32)
+        follower = habitat_sim.GreedyGeodesicFollower(
+            self.sim.pathfinder,
+            self.agent,
+            goal_radius=goal_radius,
+            stop_key=None,
+            forward_key="move_forward",
+            left_key="turn_left",
+            right_key="turn_right",
+        )
+        for action in follower.find_path(goal):
+            if action is None:
+                break
+            if self.steps >= max_steps:
+                return False
+            self.step(action)
+        return self.rotate_to(yaw_deg)
 
     def metrics(self):
         goal = self.episode["goals"][0]
