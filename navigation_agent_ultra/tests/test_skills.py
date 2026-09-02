@@ -4,6 +4,7 @@
 
 import sys
 import os
+import logging
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
@@ -129,6 +130,20 @@ def test_dispatch_navigate_rejects_unknown_param():
     assert "未知参数" in result["message"]
     assert "target_name" in result["message"]
     print("[PASS] dispatch 拒绝 target_name（未知参数）")
+
+
+def test_skill_exception_keeps_type_repr_and_traceback(monkeypatch, caplog):
+    import skills.execute_action as execute_action
+
+    def fail(_params):
+        raise RuntimeError()
+
+    monkeypatch.setitem(execute_action._EXECUTORS, "navigate_to_pose", fail)
+    with caplog.at_level(logging.ERROR):
+        result = execute_action.run("navigate_to_pose", x=1, y=2)
+
+    assert result["message"] == "执行异常: RuntimeError: RuntimeError()"
+    assert any(record.exc_info for record in caplog.records)
 
 
 def test_dispatch_advance_rejects_unknown_param():

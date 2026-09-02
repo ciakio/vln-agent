@@ -28,7 +28,7 @@ Skill: execute_action
 import sys
 import math
 import time
-import traceback
+import logging
 
 try:
     import rospy
@@ -40,6 +40,7 @@ from ..common.motion import MotionController
 
 
 SKILL_NAME = "execute_action"
+logger = logging.getLogger(__name__)
 
 
 # ===================================================================
@@ -205,8 +206,8 @@ def run(action, **params):
     except SystemExit as e:
         return _fail(action, f"进程退出 (code={e.code}), 请检查 ROS 连接")
     except Exception as e:
-        traceback.print_exc()
-        return _fail(action, f"执行异常: {e}")
+        logger.exception("%s.%s 执行失败, params=%s", SKILL_NAME, action, validated)
+        return _fail(action, f"执行异常: {type(e).__name__}: {e!r}")
 
 
 def list_actions():
