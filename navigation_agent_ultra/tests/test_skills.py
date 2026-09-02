@@ -78,6 +78,16 @@ def test_observe_out_dir_default():
     print("[PASS] observe out_dir 默认值一致")
 
 
+def test_explore_defaults_to_active_run_directory(tmp_path, monkeypatch):
+    from skills.physical_look_around import _validate_params
+
+    monkeypatch.setenv("NAV_RUN_DIR", str(tmp_path))
+    params, error = _validate_params("explore_no_align", {"target": "table"})
+
+    assert error is None
+    assert params["out_dir"] == str(tmp_path / "explore")
+
+
 def test_skill_registry_structure():
     """SKILL_REGISTRY 结构完整。"""
     assert "close_to" in SKILL_REGISTRY

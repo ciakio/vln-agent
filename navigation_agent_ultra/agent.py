@@ -83,7 +83,7 @@ class NavigationAgent:
         if not rospy.core.is_initialized():
             rospy.init_node(node_name, anonymous=True)
 
-        # 文件日志（捕获所有 rospy 日志到 logs/ 目录）
+        # 文件日志
         self.log_path = self._setup_file_logging()
 
         self.llm = llm_client or LLMClient()
@@ -111,13 +111,14 @@ class NavigationAgent:
         Returns:
             str: 日志文件绝对路径
         """
-        log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
+        run_dir = os.environ.get("NAV_RUN_DIR")
+        log_dir = run_dir or os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
         os.makedirs(log_dir, exist_ok=True)
-        log_filename = "agent_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".log"
+        log_filename = "agent.log" if run_dir else "agent_" + datetime.now().strftime("%Y%m%d_%H%M%S") + ".log"
         log_path = os.path.join(log_dir, log_filename)
 
         file_handler = logging.FileHandler(log_path, encoding="utf-8")
-        file_handler.setLevel(logging.DEBUG)
+        file_handler.setLevel(logging.INFO)
         file_handler.setFormatter(logging.Formatter(
             "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
         ))
@@ -125,7 +126,7 @@ class NavigationAgent:
         # 挂到 root logger（rospy 日志默认 propagate 到 root）
         root_logger = logging.getLogger()
         root_logger.addHandler(file_handler)
-        root_logger.setLevel(logging.DEBUG)
+        root_logger.setLevel(logging.INFO)
 
         # 同时挂到 rosout logger，防止某些 rospy 版本不 propagate
         rosout_logger = logging.getLogger("rosout")

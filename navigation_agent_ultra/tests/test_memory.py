@@ -63,6 +63,15 @@ def test_snapshot_save():
     print("[PASS] 快照保存:", os.path.basename(path))
 
 
+def test_snapshot_uses_active_run_directory(tmp_path, monkeypatch):
+    run_dir = tmp_path / "run"
+    monkeypatch.setenv("NAV_RUN_DIR", str(run_dir))
+    manager = MemoryManager(memory_dir=str(tmp_path / "memory"))
+    manager.init_work_memory("test_run", "测试统一输出目录")
+
+    assert manager.save_snapshot() == str(run_dir / "snapshot.json")
+
+
 def test_merge_to_persistent():
     m, _ = _make_manager()
     m.init_work_memory("test_004", "测试合并")

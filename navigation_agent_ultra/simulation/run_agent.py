@@ -4,11 +4,46 @@
 import argparse
 import json
 import logging
+import os
+import subprocess
 import sys
 import time
 import types
 from datetime import datetime
 from pathlib import Path
+
+
+def _make_video_compatible(run_dir):
+    video = run_dir / "trajectory.mp4"
+    converted = run_dir / ".trajectory_h264.mp4"
+    if not video.exists():
+        return
+    result = subprocess.run(
+        ["ffmpeg", "-y", "-v", "error", "-i", str(video), "-c:v", "libx264",
+         "-pix_fmt", "yuv420p", "-movflags", "+faststart", str(converted)],
+        check=False,
+    )
+    if result.returncode == 0:
+        converted.replace(video)
+
+
+def _capture_in_run_dir(args):
+    """Run once as a child so native stdout/stderr can be tee'd to console.log."""
+    stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    run_dir = (Path("runs") / f"episode_{args.episode_id}_{stamp}").resolve()
+    run_dir.mkdir(parents=True)
+    env = os.environ.copy()
+    env["NAV_RUN_DIR"] = str(run_dir)
+    command = [sys.executable, "-m", "simulation.run_agent", *sys.argv[1:]]
+    with (run_dir / "console.log").open("wb") as output:
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
+        for chunk in iter(lambda: process.stdout.read(8192), b""):
+            sys.stdout.buffer.write(chunk)
+            sys.stdout.buffer.flush()
+            output.write(chunk)
+    return_code = process.wait()
+    _make_video_compatible(run_dir)
+    return return_code
 
 
 def _install_rospy_compat():
@@ -43,6 +78,9 @@ def main():
     parser.add_argument("--record-video", action="store_true")
     args = parser.parse_args()
 
+    if "NAV_RUN_DIR" not in os.environ:
+        return _capture_in_run_dir(args)
+
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(message)s")
     _install_rospy_compat()
 
@@ -52,10 +90,8 @@ def main():
 
     episode = load_episode(args.dataset, args.episode_id)
     instruction = args.instruction or episode["instruction"]["instruction_text"]
-    record_dir = None
-    if args.record_video:
-        stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        record_dir = Path("simulation_outputs") / f"episode_{args.episode_id}_{stamp}"
+    run_dir = Path(os.environ["NAV_RUN_DIR"])
+    record_dir = run_dir if args.record_video else None
     with HabitatRuntime(args.scenes_dir, record_dir=record_dir) as runtime:
         runtime.reset(episode)
         set_runtime(runtime)
@@ -72,4 +108,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

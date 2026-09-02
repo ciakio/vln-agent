@@ -120,7 +120,8 @@ class MemoryManager:
 
     def __init__(self, memory_dir=None):
         self.memory_dir = memory_dir or MEMORY_DIR
-        self.snapshot_dir = os.path.join(self.memory_dir, "task_snapshots")
+        self.run_dir = os.environ.get("NAV_RUN_DIR")
+        self.snapshot_dir = self.run_dir or os.path.join(self.memory_dir, "task_snapshots")
         self.semantic_map_file = os.path.join(self.memory_dir, "semantic_map.json")
         self.task_history_file = os.path.join(self.memory_dir, "task_history.json")
         self.env_profile_file = os.path.join(self.memory_dir, "environment_profile.json")
@@ -450,7 +451,8 @@ class MemoryManager:
 
         self.work_memory["end_time"] = _now()
         task_id = self.work_memory["task_id"]
-        path = os.path.join(self.snapshot_dir, f"{task_id}.json")
+        filename = "snapshot.json" if self.run_dir else f"{task_id}.json"
+        path = os.path.join(self.snapshot_dir, filename)
         _save_json(path, self.work_memory)
         return path
 

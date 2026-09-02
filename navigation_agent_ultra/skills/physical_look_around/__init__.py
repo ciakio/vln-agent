@@ -29,6 +29,7 @@ Skill: physical_look_around
      "message": str, "data": dict}
 """
 
+import os
 import sys
 import traceback
 
@@ -185,6 +186,9 @@ def _validate_params(action, kwargs):
     for key, pdef in params_def.items():
         if key not in validated:
             validated[key] = pdef.get("default")
+
+    if "out_dir" in params_def and "out_dir" not in kwargs and os.environ.get("NAV_RUN_DIR"):
+        validated["out_dir"] = os.path.join(os.environ["NAV_RUN_DIR"], "explore")
 
     return validated, None
 
