@@ -111,11 +111,12 @@ class GoTurn:
             rospy.loginfo("[move_forward_step] 起点: (%.3f, %.3f), 目标: (%.3f, %.3f)",
                           start_x, start_y, target_x, target_y)
 
-        self.motion.navigate_to(target_x, target_y, self.init_theta_deg, 0)
+        arrived = self.motion.navigate_to(
+            target_x, target_y, self.init_theta_deg, 0
+        ) is True
 
         t0 = time.time()
-        arrived = False
-        while True:
+        while not arrived:
             if rospy is not None and rospy.is_shutdown():
                 break
             cx, cy, _ = self.motion.odom.get_pose()

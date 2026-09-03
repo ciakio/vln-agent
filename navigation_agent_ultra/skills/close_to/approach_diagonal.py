@@ -90,11 +90,10 @@ class ApproachDiagonal:
             rospy.loginfo("[move_along_direction] === 沿 %.0f° 前进 %.3fm ===",
                           direction_deg, distance)
 
-        self.motion.navigate_to(target_x, target_y, direction_deg, 0)
+        arrived = self.motion.navigate_to(target_x, target_y, direction_deg, 0) is True
 
         t0 = time.time()
-        arrived = False
-        while True:
+        while not arrived:
             if rospy is not None and rospy.is_shutdown():
                 break
             cx, cy, _ = self.motion.odom.get_pose()

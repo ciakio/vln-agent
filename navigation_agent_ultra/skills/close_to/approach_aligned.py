@@ -99,10 +99,13 @@ class ApproachAndNavigate:
         self.target_point = (target_x, target_y, cur_theta_deg)
 
         # 4. 导航 + 等到达（P0 #5 修复：超时检查最终距离 + 刹车）
-        send_navigation_goal(target_x, target_y, 0.0, cur_theta_deg, 0)
+        arrived = send_navigation_goal(
+            target_x, target_y, 0.0, cur_theta_deg, 0
+        ) is True
         t0 = time.time()
-        arrived = False
         while not (rospy is not None and rospy.is_shutdown()):
+            if arrived:
+                break
             cx, cy, _ = self.motion.sync_pose()
             dist = math.hypot(target_x - cx, target_y - cy)
             if dist < 0.1:

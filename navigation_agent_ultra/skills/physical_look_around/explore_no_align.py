@@ -159,15 +159,16 @@ class Explorer:
 
         _, _, cur_theta_rad = self.motion.odom.get_pose()
         cur_theta_deg = math.degrees(cur_theta_rad)
-        self.motion.navigate_to(target_x, target_y, cur_theta_deg, 0)
+        arrived = self.motion.navigate_to(target_x, target_y, cur_theta_deg, 0) is True
 
         t0 = time.time()
-        while True:
+        while not arrived:
             if rospy is not None and rospy.is_shutdown():
                 break
             cx, cy, _ = self.motion.odom.get_pose()
             dist = math.hypot(target_x - cx, target_y - cy)
             if dist < DIST_TOLERANCE:
+                arrived = True
                 break
             if time.time() - t0 > MOVE_TIMEOUT:
                 break

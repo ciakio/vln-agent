@@ -250,7 +250,7 @@ class MotionController:
 
     def navigate_to(self, x: float, y: float, yaw_deg: float = 0.0, task_type: int = 0):
         """发送导航目标点（fire-and-forget，不等待到达）。"""
-        send_navigation_goal(x, y, 0.0, yaw_deg, task_type)
+        return send_navigation_goal(x, y, 0.0, yaw_deg, task_type)
 
     def cancel_navigation(self):
         """取消当前导航目标（发送原地位姿覆盖）。"""
