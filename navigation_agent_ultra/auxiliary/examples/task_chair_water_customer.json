@@ -1,0 +1,43 @@
+[
+  {
+    "name": "1. 原地转到绝对角度 186°",
+    "skill": "execute_action",
+    "action": "turn",
+    "params": {
+      "yaw": 186
+    }
+  },
+  {
+    "name": "2. 沿当前方向前进找到黑色椅子，到位后转到绝对角 96°",
+    "skill": "navigation",
+    "action": "navigate_by_route",
+    "params": {
+      "target": "黑色椅子",
+      "angle": 96,
+      "camera": "chest",
+      "scene_type": "ground"
+    }
+  },
+  {
+    "name": "3. 原地旋转搜索并正对穿着蓝色衣服的顾客",
+    "skill": "vision_observe",
+    "action": "detect_object_360",
+    "params": {
+      "target": "穿着蓝色衣服的顾客",
+      "camera": "chest",
+      "scene_type": "ground",
+      "tolerance_deg": 3.0
+    }
+  },
+  {
+    "name": "4. 继续前进找到顾客后停止（不旋转，angle=当前朝向96°）",
+    "skill": "navigation",
+    "action": "navigate_by_route",
+    "params": {
+      "target": "穿着蓝色衣服的顾客",
+      "angle": 96,
+      "camera": "chest",
+      "scene_type": "ground"
+    }
+  }
+]

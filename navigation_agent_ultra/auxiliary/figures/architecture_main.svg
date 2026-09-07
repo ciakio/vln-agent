@@ -1,0 +1,265 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1680 650" width="1680" height="650" font-family="'Microsoft YaHei','PingFang SC','Source Han Sans SC','Segoe UI',sans-serif">
+  <defs>
+    <marker id="aG" markerWidth="8" markerHeight="8" refX="6.6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6.6,3 L0,6 Z" fill="#7A828C"/></marker>
+    <marker id="aB" markerWidth="8" markerHeight="8" refX="6.6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6.6,3 L0,6 Z" fill="#5B6FC4"/></marker>
+    <marker id="aT" markerWidth="8" markerHeight="8" refX="6.6" refY="3" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L6.6,3 L0,6 Z" fill="#2FA98C"/></marker>
+  </defs>
+  <style>
+    .lb{font-size:12px;font-weight:700;fill:#2E3A4A}
+    .mi{font-size:9.5px;fill:#6A7480}
+    .gt{font-size:9.5px;font-weight:700;fill:#8A929C}
+    .tk{font-size:9.5px;font-weight:700;fill:#3A4456}
+  </style>
+  <rect width="1680" height="650" fill="#FFFFFF"/>
+
+  <!-- ============ 顶部三簇输入 token（虚线括号贴身成组） ============ -->
+  <!-- A 输入 -->
+  <text x="376" y="36" class="gt">输入 INPUTS</text>
+  <rect x="368" y="42" width="300" height="82" rx="9" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <rect x="382" y="60" width="84" height="26" rx="7" fill="#F4D3A6" stroke="#E5B877"/><text x="424" y="77" class="tk" text-anchor="middle">用户指令</text>
+  <rect x="474" y="60" width="96" height="26" rx="7" fill="#C3D2F0" stroke="#A6BCE4"/><text x="522" y="77" class="tk" text-anchor="middle">x·y·θ 位姿</text>
+  <rect x="578" y="60" width="26" height="26" rx="7" fill="#BFE3DC" stroke="#94CFC4"/><text x="591" y="77" class="tk" text-anchor="middle">视</text>
+  <rect x="608" y="60" width="26" height="26" rx="7" fill="#BFE3DC" stroke="#94CFC4"/><text x="621" y="77" class="tk" text-anchor="middle">图</text>
+  <rect x="638" y="60" width="26" height="26" rx="7" fill="#BFE3DC" stroke="#94CFC4"/><text x="651" y="77" class="tk" text-anchor="middle">景</text>
+  <text x="382" y="108" class="mi">指令 · 实时位姿 · 多视角视觉（VLM）</text>
+
+  <!-- B 长期记忆检索 -->
+  <text x="696" y="36" class="gt">长期记忆检索</text>
+  <rect x="688" y="42" width="220" height="82" rx="9" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <rect x="702" y="60" width="64" height="26" rx="7" fill="#D6C8F0" stroke="#BDA6E6"/><text x="734" y="77" class="tk" text-anchor="middle">语义地图</text>
+  <rect x="772" y="60" width="64" height="26" rx="7" fill="#F3C6C6" stroke="#E6A8A8"/><text x="804" y="77" class="tk" text-anchor="middle">任务历史</text>
+  <rect x="842" y="60" width="54" height="26" rx="7" fill="#DEE2E8" stroke="#C4CAD2"/><text x="869" y="77" class="tk" text-anchor="middle">环境</text>
+  <text x="702" y="108" class="mi">通道 A 代码子串 · 通道 B 全量语义</text>
+
+  <!-- C 系统 Prompt -->
+  <text x="936" y="36" class="gt">系统 PROMPT</text>
+  <rect x="928" y="42" width="256" height="82" rx="9" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <rect x="942" y="60" width="228" height="26" rx="7" fill="#EEF0F4" stroke="#D4D9E0"/><text x="1056" y="77" class="mi" text-anchor="middle">技能能力 · 组合链 · 记忆使用规则</text>
+  <text x="942" y="108" class="mi">基座：文本 LLM（规划/解析） · 视觉 VLM（感知）</text>
+
+  <path d="M518,124 L518,142" stroke="#7A828C" stroke-width="1.5" marker-end="url(#aG)"/>
+  <path d="M798,124 L798,142" stroke="#7A828C" stroke-width="1.5" marker-end="url(#aG)"/>
+  <path d="M1056,124 L1056,142" stroke="#7A828C" stroke-width="1.5" marker-end="url(#aG)"/>
+
+  <!-- ============ 中央柔色主条（深色字，无子框） ============ -->
+  <rect x="368" y="144" width="816" height="78" rx="14" fill="#DCE4F9" stroke="#B9C8F0" stroke-width="1.3"/>
+  <g transform="translate(556,168)" fill="none" stroke="#3D4F9E" stroke-width="1.4">
+    <circle cx="0" cy="7" r="3.2"/><circle cx="17" cy="0" r="3.2"/><circle cx="17" cy="14" r="3.2"/><circle cx="34" cy="7" r="3.2"/>
+    <path d="M3,7 L14,1 M3,7 L14,13 M20,1 L31,6 M20,14 L31,8"/>
+  </g>
+  <text x="776" y="180" font-size="16.5" font-weight="700" fill="#2E3A8C" text-anchor="middle">Navigation Agent · 大模型智能体内核</text>
+  <text x="776" y="202" font-size="10" fill="#5A6796" text-anchor="middle">关键词提取 → Planner 任务拆分 → Resolver 延迟解析 → 两层纠错（工作流见下方）</text>
+  <path d="M776,222 L776,236" stroke="#7A828C" stroke-width="1.5" marker-end="url(#aG)"/>
+
+  <!-- ============ 输出动作 token 条 ============ -->
+  <text x="376" y="232" class="gt">动作序列 STEPS（token 颜色 = 所属 Skill）</text>
+  <rect x="368" y="238" width="816" height="64" rx="9" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <g font-size="9.5" font-weight="700" fill="#3A4456">
+    <rect x="384" y="254" width="86" height="24" rx="6" fill="#C3D2F0" stroke="#A6BCE4"/><text x="427" y="270" text-anchor="middle">环视 8 方位</text>
+    <path d="M472,266 L484,266" stroke="#7A828C" marker-end="url(#aG)"/>
+    <rect x="488" y="254" width="86" height="24" rx="6" fill="#C3D2F0" stroke="#A6BCE4"/><text x="531" y="270" text-anchor="middle">旋转找目标</text>
+    <path d="M576,266 L588,266" stroke="#7A828C" marker-end="url(#aG)"/>
+    <rect x="592" y="254" width="86" height="24" rx="6" fill="#C3D2F0" stroke="#A6BCE4"/><text x="635" y="270" text-anchor="middle">无对准探索</text>
+    <path d="M680,266 L692,266" stroke="#7A828C" marker-end="url(#aG)"/>
+    <rect x="696" y="254" width="92" height="24" rx="6" fill="#BFE3DC" stroke="#94CFC4"/><text x="742" y="270" text-anchor="middle">斜角靠近</text>
+    <path d="M790,266 L802,266" stroke="#7A828C" marker-end="url(#aG)"/>
+    <rect x="806" y="254" width="100" height="24" rx="6" fill="#D6C8F0" stroke="#BDA6E6"/><text x="856" y="270" text-anchor="middle">导航到坐标点</text>
+  </g>
+  <text x="922" y="262" class="mi">规划只定步骤策略</text>
+  <text x="922" y="276" class="mi">resolve 参数执行前补全</text>
+
+  <!-- ============ 内核工作流四宫格（主条外的内部结构） ============ -->
+  <text x="376" y="312" class="gt">内核工作流 INNER PIPELINE</text>
+  <g>
+    <rect x="368" y="318" width="192" height="56" rx="8" fill="#E9EEFC" stroke="#C3D0F2" stroke-width="1.1"/>
+    <text x="380" y="339" class="lb" fill="#33407A">关键词提取</text>
+    <text x="380" y="356" class="mi">LLM 小调用 · 256 tok · T=0</text>
+    <text x="380" y="369" class="mi">targets / actions / 约束</text>
+    <rect x="576" y="318" width="192" height="56" rx="8" fill="#E9EEFC" stroke="#C3D0F2" stroke-width="1.1"/>
+    <text x="588" y="339" class="lb" fill="#33407A">Planner 规划器</text>
+    <text x="588" y="356" class="mi">任务理解 · 长序列拆分</text>
+    <text x="588" y="369" class="mi">输出 steps · 标延迟参数</text>
+    <rect x="784" y="318" width="192" height="56" rx="8" fill="#E9EEFC" stroke="#C3D0F2" stroke-width="1.1"/>
+    <text x="796" y="339" class="lb" fill="#33407A">Resolver 解析</text>
+    <text x="796" y="356" class="mi">执行前语义匹配</text>
+    <text x="796" y="369" class="mi">落地坐标 / 角度</text>
+    <rect x="992" y="318" width="192" height="56" rx="8" fill="#E9EEFC" stroke="#C3D0F2" stroke-width="1.1"/>
+    <text x="1004" y="339" class="lb" fill="#33407A">两层纠错</text>
+    <text x="1004" y="356" class="mi">repeat ≤ 1（瞬时）</text>
+    <text x="1004" y="369" class="mi">replan ≤ 2（换策略）</text>
+    <path d="M560,346 L574,346" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+    <path d="M768,346 L782,346" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+    <path d="M976,346 L990,346" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+  </g>
+
+  <!-- ============ 机制面板：延迟传参 ============ -->
+  <rect x="368" y="390" width="402" height="212" rx="10" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <text x="382" y="410" class="gt">延迟传参 DEFERRED RESOLUTION</text>
+  <rect x="382" y="418" width="172" height="54" rx="8" fill="#F1F2F5" stroke="#D4D9E0"/>
+  <text x="394" y="438" class="lb">规划时刻</text>
+  <text x="394" y="455" class="mi">只定步骤策略</text>
+  <text x="394" y="468" class="mi">未知坐标用 resolve 占位</text>
+  <path d="M556,445 L580,445" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+  <rect x="582" y="418" width="174" height="54" rx="8" fill="#E4F3EF" stroke="#A9D8CE"/>
+  <text x="594" y="438" class="lb" fill="#1D7A6E">执行时刻 Resolver</text>
+  <text x="594" y="455" class="mi">最新位姿 + 通道 B 清单</text>
+  <text x="594" y="468" class="mi">LLM 语义匹配填具体值</text>
+  <circle cx="390" cy="498" r="4" fill="#5BA868"/><text x="401" y="502" class="mi">found=true → 直接填参并 dispatch 执行</text>
+  <circle cx="390" cy="522" r="4" fill="#D97070"/><text x="401" y="526" class="mi">found=false → ResolutionError → 触发 replan</text>
+  <line x1="382" y1="540" x2="756" y2="540" stroke="#E4E8EE"/>
+  <text x="382" y="558" class="mi">· 仅带 resolve 的步骤触发，一次 LLM 调用，输出结构化 JSON</text>
+  <text x="382" y="576" class="mi">· 用执行时刻最新记忆，含前序步骤新发现的物体</text>
+  <text x="382" y="594" class="mi">· 同义词 / 描述 / 上下文可模糊匹配，弥补代码子串检索</text>
+
+  <!-- ============ 机制面板：两层纠错 ============ -->
+  <rect x="782" y="390" width="402" height="212" rx="10" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <text x="796" y="410" class="gt">两层纠错 ERROR RECOVERY</text>
+  <rect x="796" y="418" width="374" height="52" rx="8" fill="#EAF1FC" stroke="#B9CEF0"/>
+  <text x="808" y="438" class="lb" fill="#3358A8">技能层 repeat ≤ 1</text>
+  <text x="808" y="457" class="mi">同参数重试：VLM 偶发漏检 · 旋转差几度 · 导航瞬时误差</text>
+  <rect x="796" y="478" width="374" height="52" rx="8" fill="#FBF1E2" stroke="#EBC98E"/>
+  <text x="808" y="498" class="lb" fill="#9A6B1F">编排层 replan ≤ 2</text>
+  <text x="808" y="517" class="mi">带已完成步骤与失败原因，让 LLM 更换策略重新拆分</text>
+  <line x1="796" y1="544" x2="1170" y2="544" stroke="#E4E8EE"/>
+  <text x="796" y="562" class="mi">· 确定性失败不重试：参数解析失败 / odom 超时</text>
+  <text x="796" y="580" class="mi">· 重试前等待瞬态消除，重新取位姿再 dispatch</text>
+  <text x="796" y="598" class="mi">· 重试仍失败才升级为 replan，计数写入工作记忆</text>
+
+  <!-- ============ 左侧 记忆与学习 簇 ============ -->
+  <rect x="16" y="236" width="336" height="366" rx="10" fill="none" stroke="#C9CFD8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <!-- 数据库线性小图标 -->
+  <g transform="translate(28,244)" fill="none" stroke="#9A8A63" stroke-width="1.4">
+    <ellipse cx="7" cy="4" rx="7" ry="3.2"/><path d="M0,4 V14 M14,4 V14 M0,9 a7,3.2 0 0 0 14,0 M0,14 a7,3.2 0 0 0 14,0"/>
+  </g>
+  <text x="46" y="256" class="gt" fill="#9A8A63">记忆与学习 MEMORY &amp; LEARNING</text>
+
+  <text x="30" y="280" class="lb">持久化记忆库 · 跨任务</text>
+  <g class="mi">
+    <rect x="30" y="290" width="10" height="10" rx="2.5" fill="#D6C8F0" stroke="#BDA6E6"/><text x="46" y="299">semantic_map｜物体坐标·区域·置信度</text>
+    <rect x="30" y="312" width="10" height="10" rx="2.5" fill="#F3C6C6" stroke="#E6A8A8"/><text x="46" y="321">task_history｜成败·归因·教训（近 5）</text>
+    <rect x="30" y="334" width="10" height="10" rx="2.5" fill="#DEE2E8" stroke="#C4CAD2"/><text x="46" y="343">environment_profile｜只读·人工维护</text>
+  </g>
+  <rect x="30" y="352" width="150" height="20" rx="5" fill="#EAF0FC" stroke="#C3D2F0"/><text x="105" y="366" class="mi" text-anchor="middle">通道 A 代码子串检索</text>
+  <rect x="186" y="352" width="150" height="20" rx="5" fill="#F2EEFB" stroke="#D6C8F0"/><text x="261" y="366" class="mi" text-anchor="middle">通道 B 全量语义匹配</text>
+
+  <line x1="30" y1="384" x2="338" y2="384" stroke="#E4E8EE"/>
+  <text x="30" y="402" class="lb">工作记忆 · 任务内</text>
+  <g class="mi">
+    <rect x="30" y="412" width="10" height="10" rx="2.5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="46" y="421">plan / steps：计划与每步结果</text>
+    <rect x="30" y="432" width="10" height="10" rx="2.5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="46" y="441">perceptions：感知快照·最终位姿</text>
+    <rect x="30" y="452" width="10" height="10" rx="2.5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="46" y="461">objects_discovered：发现累积</text>
+    <rect x="30" y="472" width="10" height="10" rx="2.5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="46" y="481">replans / skill_retries：计数</text>
+  </g>
+
+  <line x1="30" y1="494" x2="338" y2="494" stroke="#E4E8EE"/>
+  <text x="30" y="512" class="lb">写入与归档</text>
+  <g class="mi">
+    <circle cx="35" cy="526" r="4" fill="#2FA98C"/><text x="46" y="530">实时写：仅合并 confidence ≥ 0.7</text>
+    <circle cx="35" cy="546" r="4" fill="#2FA98C"/><text x="46" y="550">任务末：全量 merge，坐标加权</text>
+    <circle cx="35" cy="566" r="4" fill="#2FA98C"/><text x="46" y="570">snapshots 不可变 · 1.5m 内合并</text>
+  </g>
+  <rect x="30" y="578" width="308" height="18" rx="5" fill="#F7F9FE" stroke="#DDE3EA"/>
+  <text x="184" y="591" class="mi" text-anchor="middle">Reviewer 任务末复核：成败·归因·教训 → 追加 task_history</text>
+
+  <!-- 检索读：记忆 → 主条（短折线） -->
+  <path d="M352,300 L360,300 L360,183 L366,183" fill="none" stroke="#5B6FC4" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#aB)"/>
+  <text x="357" y="288" class="mi" fill="#5B6FC4" transform="rotate(-90 357 288)" text-anchor="middle">检索读</text>
+
+  <!-- 主条 → 在线执行（缝隙短折线） -->
+  <path d="M1184,183 L1192,183 L1192,69 L1198,69" fill="none" stroke="#7A828C" stroke-width="1.5" marker-end="url(#aG)"/>
+
+  <!-- ============ 右侧 在线执行 簇 ============ -->
+  <rect x="1200" y="24" width="464" height="590" rx="10" fill="none" stroke="#BFE0D8" stroke-width="1.1" stroke-dasharray="4 3"/>
+  <text x="1214" y="44" class="gt" fill="#2F8F83">在线执行 ONLINE EXECUTION</text>
+
+  <rect x="1214" y="50" width="436" height="38" rx="8" fill="#F7F9FE" stroke="#DDE3EA" stroke-width="1"/>
+  <text x="1226" y="68" class="lb">延迟解析 → dispatch 调度</text>
+  <text x="1226" y="82" class="mi">仅 resolve 步骤触发：取最新位姿 + 通道 B 全量清单</text>
+  <path d="M1432,90 L1432,99" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+
+  <rect x="1214" y="101" width="436" height="212" rx="9" fill="#FFFFFF" stroke="#DDE3EA" stroke-width="1"/>
+  <text x="1226" y="121" class="lb">三大 Skill · 7 action</text>
+  <rect x="1518" y="109" width="118" height="18" rx="9" fill="#2FA98C"/><text x="1577" y="122" font-size="9.3" font-weight="700" fill="#fff" text-anchor="middle">VLM 视觉感知</text>
+
+  <rect x="1226" y="129" width="138" height="172" rx="8" fill="#F5F8FF" stroke="#C9D8F2" stroke-width="1"/>
+  <text x="1236" y="147" font-size="10.5" font-weight="700" fill="#3358A8">环视搜索</text>
+  <g font-size="9" fill="#33407A">
+    <rect x="1236" y="153" width="118" height="21" rx="5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="1295" y="167" text-anchor="middle">observe_surroundings</text>
+    <rect x="1236" y="178" width="118" height="21" rx="5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="1295" y="192" text-anchor="middle">rotate_find_align</text>
+    <rect x="1236" y="203" width="118" height="21" rx="5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="1295" y="217" text-anchor="middle">explore_no_align</text>
+    <rect x="1236" y="228" width="118" height="21" rx="5" fill="#C3D2F0" stroke="#A6BCE4"/><text x="1295" y="242" text-anchor="middle">advance_search_turn</text>
+  </g>
+  <text x="1236" y="272" class="mi">原地环视·搜索·转向</text>
+  <text x="1236" y="288" class="mi">VLM 判有无/方向/深度</text>
+
+  <rect x="1372" y="129" width="132" height="172" rx="8" fill="#F2FBF9" stroke="#BFE2DA" stroke-width="1"/>
+  <text x="1382" y="147" font-size="10.5" font-weight="700" fill="#1D7A6E">靠近目标</text>
+  <g font-size="9" fill="#0F5C52">
+    <rect x="1382" y="153" width="112" height="21" rx="5" fill="#BFE3DC" stroke="#94CFC4"/><text x="1438" y="167" text-anchor="middle">approach_aligned</text>
+    <rect x="1382" y="178" width="112" height="21" rx="5" fill="#BFE3DC" stroke="#94CFC4"/><text x="1438" y="192" text-anchor="middle">approach_diagonal</text>
+  </g>
+  <text x="1382" y="272" class="mi">正对齐 / 斜角逼近</text>
+  <text x="1382" y="288" class="mi">VLM 算偏移与距离</text>
+
+  <rect x="1512" y="129" width="124" height="172" rx="8" fill="#F8F5FE" stroke="#D6C8F0" stroke-width="1"/>
+  <text x="1522" y="147" font-size="10.5" font-weight="700" fill="#5B44A8">执行动作</text>
+  <rect x="1522" y="153" width="104" height="21" rx="5" fill="#D6C8F0" stroke="#BDA6E6"/><text x="1574" y="167" font-size="9" fill="#3A2F66" text-anchor="middle">navigate_to_pose</text>
+  <text x="1522" y="272" class="mi">直接发坐标点</text>
+  <text x="1522" y="288" class="mi">API 导航到位</text>
+  <path d="M1432,313 L1432,322" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+
+  <rect x="1214" y="324" width="210" height="48" rx="8" fill="#FFFFFF" stroke="#DDE3EA" stroke-width="1"/>
+  <text x="1226" y="344" class="lb">运动控制</text>
+  <text x="1226" y="361" class="mi">PID 原地旋转 · API 坐标点导航</text>
+  <path d="M1426,348 L1438,348" stroke="#7A828C" stroke-width="1.4" marker-end="url(#aG)"/>
+  <rect x="1440" y="324" width="210" height="48" rx="10" fill="#FFFFFF" stroke="#394B66" stroke-width="1.4"/>
+  <g transform="translate(1452,336)" fill="none" stroke="#394B66" stroke-width="1.4"><rect x="0" y="4" width="22" height="15" rx="4"/><circle cx="5" cy="22" r="3.6"/><circle cx="17" cy="22" r="3.6"/></g>
+  <text x="1482" y="345" class="lb">真机执行</text>
+  <text x="1482" y="362" class="mi">人形机器人 · 底盘 odom</text>
+
+  <text x="1214" y="390" class="gt">VLM 检测画面</text>
+  <rect x="1214" y="396" width="210" height="150" rx="8" fill="#FFFFFF" stroke="#DDE3EA" stroke-width="1"/>
+  <rect x="1224" y="404" width="190" height="98" rx="5" fill="#E9EDF3"/>
+  <polygon points="1224,502 1414,502 1372,456 1266,456" fill="#DCE2EA"/>
+  <line x1="1266" y1="456" x2="1266" y2="418" stroke="#C3CBD6"/><line x1="1310" y1="456" x2="1310" y2="418" stroke="#C3CBD6"/><line x1="1354" y1="456" x2="1354" y2="418" stroke="#C3CBD6"/>
+  <rect x="1302" y="424" width="19" height="36" rx="3" fill="#BFE3DC" stroke="#2FA98C" stroke-width="1.2" stroke-dasharray="4 3"/>
+  <text x="1311" y="418" font-size="8.6" fill="#0F7A6C" text-anchor="middle">椰子水 0.82</text>
+  <text x="1224" y="518" class="mi">开放词汇识别·方向/深度/置信度</text>
+  <text x="1224" y="533" class="mi">写入 perceptions.objects_found</text>
+
+  <text x="1440" y="390" class="gt">语义地图与轨迹</text>
+  <rect x="1440" y="396" width="210" height="150" rx="8" fill="#FFFFFF" stroke="#DDE3EA" stroke-width="1"/>
+  <rect x="1450" y="404" width="190" height="98" rx="5" fill="#FFFFFF" stroke="#E4E8EE"/>
+  <g stroke="#EEF1F5"><line x1="1482" y1="404" x2="1482" y2="502"/><line x1="1514" y1="404" x2="1514" y2="502"/><line x1="1546" y1="404" x2="1546" y2="502"/><line x1="1578" y1="404" x2="1578" y2="502"/><line x1="1450" y1="437" x2="1640" y2="437"/><line x1="1450" y1="470" x2="1640" y2="470"/></g>
+  <rect x="1482" y="437" width="64" height="65" fill="#F2F4F8" stroke="#DDE3EA"/>
+  <rect x="1546" y="470" width="62" height="32" fill="#F2F4F8" stroke="#DDE3EA"/>
+  <circle cx="1472" cy="486" r="4" fill="#5B6FC4"/>
+  <path d="M1472,486 L1506,464 L1548,468 L1578,452 L1606,458" fill="none" stroke="#2FA98C" stroke-width="1.9"/>
+  <polygon points="1606,458 1598,453 1599,463" fill="#2FA98C"/>
+  <circle cx="1606" cy="458" r="3.6" fill="#E8A33D"/>
+  <text x="1450" y="518" class="mi">蓝=当前位姿　橙=记忆目标</text>
+  <text x="1450" y="533" class="mi">绿=API 轨迹，坐标实时入库</text>
+
+  <line x1="1214" y1="552" x2="1650" y2="552" stroke="#E4E8EE"/>
+  <text x="1214" y="570" class="mi" fill="#1D7A6E">● 每步感知实时写入工作记忆 perceptions / objects_discovered</text>
+  <text x="1214" y="590" class="mi" fill="#9A6B1F">● 步骤瞬时失败先走技能层 repeat，仍失败升级编排层 replan</text>
+  <text x="1214" y="608" class="mi">● 任务末 Reviewer 复核，结论与新物体回写持久化记忆</text>
+
+  <!-- ============ 图例 ============ -->
+  <line x1="16" y1="624" x2="1664" y2="624" stroke="#E4E8EE"/>
+  <g transform="translate(16,642)" class="mi" font-size="9.8">
+    <rect x="0" y="-10" width="13" height="13" rx="4" fill="#F4D3A6" stroke="#E5B877"/><text x="19" y="0">指令</text>
+    <rect x="54" y="-10" width="13" height="13" rx="4" fill="#C3D2F0" stroke="#A6BCE4"/><text x="73" y="0">位姿/环视 action</text>
+    <rect x="172" y="-10" width="13" height="13" rx="4" fill="#BFE3DC" stroke="#94CFC4"/><text x="191" y="0">视觉/靠近 action</text>
+    <rect x="296" y="-10" width="13" height="13" rx="4" fill="#D6C8F0" stroke="#BDA6E6"/><text x="315" y="0">语义记忆/执行 action</text>
+    <rect x="440" y="-10" width="13" height="13" rx="4" fill="#F3C6C6" stroke="#E6A8A8"/><text x="459" y="0">历史记忆</text>
+    <rect x="520" y="-10" width="13" height="13" rx="4" fill="#DEE2E8" stroke="#C4CAD2"/><text x="539" y="0">环境档案</text>
+    <rect x="604" y="-10" width="13" height="13" rx="4" fill="#DCE4F9" stroke="#B9C8F0"/><text x="623" y="0" font-weight="700" fill="#2E3A8C">LLM 内核</text>
+    <rect x="690" y="-10" width="13" height="13" rx="4" fill="#E9EEFC" stroke="#C3D0F2"/><text x="709" y="0">内部工作流</text>
+    <line x1="786" y1="-3" x2="818" y2="-3" stroke="#5B6FC4" stroke-width="1.6" stroke-dasharray="5 3"/><text x="824" y="0">检索读</text>
+    <line x1="886" y1="-3" x2="918" y2="-3" stroke="#2FA98C" stroke-width="1.6"/><text x="924" y="0">执行 / 写入</text>
+    <line x1="996" y1="-3" x2="1028" y2="-3" stroke="#7A828C" stroke-width="1.6"/><text x="1034" y="0">主流向</text>
+    <circle cx="1090" cy="-3" r="4.5" fill="#5BA868"/><text x="1101" y="0">成功分支</text>
+    <circle cx="1168" cy="-3" r="4.5" fill="#D97070"/><text x="1179" y="0">失败 / 重规划分支</text>
+  </g>
+</svg>

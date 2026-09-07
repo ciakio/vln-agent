@@ -1,0 +1,32 @@
+[
+  {
+    "name": "环境观察",
+    "skill": "vision_observe",
+    "action": "look_around",
+    "params": {
+      "camera": "chest",
+      "return_to_start": true
+    }
+  },
+  {
+    "name": "旋转对正目标",
+    "skill": "vision_observe",
+    "action": "detect_object_360",
+    "params": {
+      "target": "白色桌子上的白绿色椰子水饮料瓶",
+      "camera": "chest",
+      "scene_type": "shelf",
+      "tolerance_deg": 3.0
+    }
+  },
+  {
+    "name": "逼近目标",
+    "skill": "close_to",
+    "action": "approach_aligned",
+    "params": {
+      "target": "白色桌子上的白绿色椰子水饮料瓶",
+      "camera": "chest",
+      "scene_type": "shelf"
+    }
+  }
+]
